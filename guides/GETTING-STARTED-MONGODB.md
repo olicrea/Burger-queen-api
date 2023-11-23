@@ -3,11 +3,6 @@
 MongoDB es un base de datos no-relacional, y es la más _común_ (popular)
 a día de hoy en el ecosistema de Node.js.
 
-Si vas a trabajar con MongoDB y Docker, mejor lee primero
-[**la guía de _primeros pasos con Docker_**](./GETTING-STARTED-DOCKER.md).
-Si vas a instalar MongoDB y desarrollar el proyecto sin
-Docker en este momento, sigue leyendo esta guía.
-
 Una vez creado tu fork y clonado el repo en tu computadora, haces `npm install`
 para instalar las dependencias básicas.
 Antes de poder comenzar a codear, tenemos que crear nuestro _entorno de desarrollo_.
@@ -25,7 +20,10 @@ Para ello te recomendamos seguir los siguientes pasos:
 
 ## 1. Instalar MongoDB y Compass
 
-El sitio de MongoDB tiene tutoriales de cómo instalar la [Community Edition](https://www.mongodb.com/docs/compass/current/install/).
+Hay 3 formas diferentes obtener MongoDB: instalación local,
+usando docker y usando Atlas. La instalación local es la
+forma más rápida y recomendadata. El sitio de MongoDB tiene tutoriales de cómo instalar la [Community Edition](https://www.mongodb.com/docs/manual/administration/install-community/)
+localmente en tu computadora.
 Elige tu plataforma (Windows, Mac, Ubuntu etc) y sigue [el tutorial](https://www.mongodb.com/docs/manual/installation/#mongodb-installation-tutorials).
 
 Con los tutoriales, vas a descargar y instalar MongoDB en tu sistema,
@@ -36,6 +34,10 @@ que es un GUI (Graphical User Interface) para interactuar con la base de datos.
 Puedes interactuar con MongoDB sin Compass y solo en la linea de comando,
 pero un GUI puede ayudarte visualizar y entender lo que está en
 la base de datos. Sigue [las instrucciones de instalación de Compass](https://www.mongodb.com/docs/compass/current/install/).
+
+Si ya estas haciendo la _hacker edition_ de este proyecto
+y vas a trabajar con MongoDB y Docker, lee 
+[**la guía de _primeros pasos con Docker_**](./GETTING-STARTED-DOCKER.md).
 
 ## 2. Levanta la base de datos y servidor
 
