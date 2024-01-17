@@ -29,7 +29,12 @@ describe('POST /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: {
+          name: 'Test',
+          price: 10,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -40,7 +45,17 @@ describe('POST /orders', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5, client: 'client' }], userId: user._id },
+        body: { 
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 5,
+              product: { ...product },
+            }
+          ],
+          status: "pending",
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -61,7 +76,12 @@ describe('POST /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 25 },
+        body: {
+          name: 'Test',
+          price: 25,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -72,7 +92,17 @@ describe('POST /orders', () => {
       })
       .then(([product, user]) => fetchAsAdmin('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 25 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 5,
+              product: { ...product },
+            }
+          ],
+          status: "pending",          
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -99,7 +129,12 @@ describe('GET /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: {
+          name: 'Test',
+          price: 10,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -112,11 +147,31 @@ describe('GET /orders', () => {
         Promise.all([
           fetchAsTestUser('/orders', {
             method: 'POST',
-            body: { products: [{ productId: product._id, qty: 50 }], userId: user._id },
+            body: {
+              userId: user._id,
+              client: 'client',
+              products: [
+                {
+                  qty: 50,
+                  product: { ...product },
+                }
+              ],
+              status: "pending",              
+            },
           }),
           fetchAsAdmin('/orders', {
             method: 'POST',
-            body: { products: [{ productId: product._id, qty: 25 }], userId: user._id },
+            body: {
+              userId: user._id,
+              client: 'client',
+              products: [
+                {
+                  qty: 25,
+                  product: { ...product },
+                }
+              ],
+              status: "pending",              
+            },
           }),
         ])
           .then((responses) => {
@@ -145,7 +200,12 @@ describe('GET /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: {
+          name: 'Test',
+          price: 10,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -158,11 +218,31 @@ describe('GET /orders', () => {
         Promise.all([
           fetchAsTestUser('/orders', {
             method: 'POST',
-            body: { products: [{ productId: product._id, qty: 50 }], userId: user._id },
+            body: {
+              userId: user._id,
+              client: 'client',
+              products: [
+                {
+                  qty: 50,
+                  product: { ...product },
+                }
+              ],
+              status: "pending",               
+            },
           }),
           fetchAsAdmin('/orders', {
             method: 'POST',
-            body: { products: [{ productId: product._id, qty: 25 }], userId: user._id },
+            body: {
+              userId: user._id,
+              client: 'client',
+              products: [
+                {
+                  qty: 25,
+                  product: { ...product },
+                }
+              ],
+              status: "pending", 
+            },
           }),
         ])
           .then((responses) => {
@@ -203,7 +283,12 @@ describe('GET /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 99 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -214,7 +299,17 @@ describe('GET /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -236,7 +331,12 @@ describe('GET /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -247,7 +347,17 @@ describe('GET /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -284,7 +394,12 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -295,7 +410,17 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -311,7 +436,12 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -322,7 +452,17 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -339,7 +479,12 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -350,7 +495,17 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: { 
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -374,7 +529,12 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -385,7 +545,17 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -409,7 +579,12 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -420,7 +595,17 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -459,7 +644,12 @@ describe('DELETE /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 25 },
+        body: {
+          name: 'Test',
+          price: 99,
+          image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+          type: "Lunch"
+        },
       }),
       fetchAsTestUser('/users/test@test.test'),
     ])
@@ -470,7 +660,17 @@ describe('DELETE /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: {
+          userId: user._id,
+          client: 'client',
+          products: [
+            {
+              qty: 50,
+              product: { ...product },
+            }
+          ],
+          status: "pending",           
+        },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);

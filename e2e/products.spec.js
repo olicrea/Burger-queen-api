@@ -23,7 +23,12 @@ describe('POST /products', () => {
   it('should create product as admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 5 },
+      body: {
+        name: 'Test',
+        price: 5,
+        image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+        type: "Lunch"
+      },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -33,6 +38,8 @@ describe('POST /products', () => {
         expect(typeof json._id).toBe('string');
         expect(typeof json.name).toBe('string');
         expect(typeof json.price).toBe('number');
+        expect(typeof json.image).toBe('string');
+        expect(typeof json.type).toBe('string');
       })
   ));
 });
@@ -50,6 +57,8 @@ describe('GET /products', () => {
           expect(typeof product._id).toBe('string');
           expect(typeof product.name).toBe('string');
           expect(typeof product.price).toBe('number');
+          expect(typeof product.image).toBe('string');
+          expect(typeof product.type).toBe('string');
         });
       })
   ));
@@ -74,6 +83,8 @@ describe('GET /products/:productid', () => {
           expect(typeof product._id).toBe('string');
           expect(typeof product.name).toBe('string');
           expect(typeof product.price).toBe('number');
+          expect(typeof product.image).toBe('string');
+          expect(typeof product.type).toBe('string');
         });
         return fetchAsTestUser(`/products/${json[0]._id}`)
           .then((resp) => ({ resp, product: json[0] }));
@@ -97,7 +108,12 @@ describe('PUT /products/:productid', () => {
   it('should fail with 403 when not admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: {
+        name: 'Test',
+        price: 10,
+        image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+        type: "Lunch"
+      },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -121,7 +137,12 @@ describe('PUT /products/:productid', () => {
   it('should fail with 400 when bad props', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: {
+        name: 'Test',
+        price: 10,
+        image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+        type: "Lunch"
+      },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -164,7 +185,12 @@ describe('DELETE /products/:productid', () => {
   it('should fail with 403 when not admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: {
+        name: 'Test',
+        price: 10,
+        image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+        type: "Lunch"
+      },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -182,7 +208,12 @@ describe('DELETE /products/:productid', () => {
   it('should delete other product as admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: {
+        name: 'Test',
+        price: 10,
+        image: "https://github.com/Laboratoria/bootcamp/tree/main/projects/04-burger-queen-api/resources/images/water.jpg",
+        type: "Lunch"
+      },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
