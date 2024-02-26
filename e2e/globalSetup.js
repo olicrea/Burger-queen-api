@@ -21,6 +21,7 @@ const __e2e = {
   testUserCredentials: {
     email: 'test@test.test',
     password: '123456',
+    role: 'chef',
   },
   testUserToken: null,
   childProcessPid: null,
