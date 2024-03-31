@@ -9,15 +9,19 @@ const {
   getUsers,
 } = require('../controller/users');
 
+// O: La función acepta dos parámetros: app y next. app es un objeto que contiene la configuración de la aplicación, y next es una función que se llamará para pasar el control al siguiente middleware o acción.
 const initAdminUser = (app, next) => {
+  // O: Se utilizan DESTRUCTURING para extraer las propiedades adminEmail y adminPassword del objeto que se obtiene de app.get('config'). 
   const { adminEmail, adminPassword } = app.get('config');
+  // O: Si cualquiera de ellos es falsy, la función next se llama y se devuelve el control al siguiente middleware o acción
   if (!adminEmail || !adminPassword) {
     return next();
   }
 
   const adminUser = {
     email: adminEmail,
-    password: bcrypt.hashSync(adminPassword, 10),
+    // O:  El password se ha encriptado utilizando bcrypt con un factor de coste de 10 (cuanto mayor es este valor es más seguro, pero también pone a trabajar más al servidor)
+    password: bcrypt.hashSync(adminPassword, 10), // O: se usa método síncrono
     roles: "admin",
   };
 
