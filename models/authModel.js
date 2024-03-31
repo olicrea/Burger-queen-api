@@ -27,3 +27,5 @@ const authSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("auth", authSchema);
+
+//POST-LOGIN: 200, 400, 404
