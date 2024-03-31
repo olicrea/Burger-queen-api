@@ -1,6 +1,9 @@
 const { default: mongoose } = require("mongoose");
 
 const productSchema = new mongoose.Schema({
+    // qty: {
+    //     type: Number
+    // },
     id: {
         type: String
     },
@@ -18,8 +21,11 @@ const productSchema = new mongoose.Schema({
     },
     dateEntry: {
         type: Date 
+    },
+    error: {
+        type: String
     }
   });
   
 
-module.exports = mongoose.model("products", productsSchema);
+module.exports = mongoose.model("product", productsSchema);
