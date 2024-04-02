@@ -31,6 +31,16 @@ class usersCrud {
         // O: Query.prototype.limit()
         // O: query.limit(10);
         // O: Un objeto de tipo Query en Mongoose representa una consulta que se puede ejecutar en la base de datos. No es el resultado de la consulta en sí, sino una representación de la consulta que se puede modificar o ejecutar más adelante.
+    }
+
+    async adminUserFind(){
+        try {
+            const result = await this.model.find({ role: 'admin'});
+            return result;
+        }
+        catch(error){
+            console.error(error);
+        }
     } 
 
     async createUser(user){
