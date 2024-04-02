@@ -24,11 +24,9 @@ const initAdminUser = (app, next) => {
     password: bcrypt.hashSync(adminPassword, 10), // O: se usa método síncrono
     roles: "admin",
   };
-
   // TODO: Create admin user
   // First, check if adminUser already exists in the database
   // If it doesn't exist, it needs to be saved
-
   next();
 };
 
