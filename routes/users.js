@@ -33,7 +33,7 @@ const initAdminUser = async (app, next) => {
       };
       await usersCruded.createUser(adminUser);
     }
-  
+
   // TODO: Create admin user
   // First, check if adminUser already exists in the database
   // If it doesn't exist, it needs to be saved
