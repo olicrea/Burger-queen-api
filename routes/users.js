@@ -10,7 +10,7 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const usersCruded = new usersCrud();
+const usersCruded = usersCrud();
 
 // O: La función acepta dos parámetros: app y next. app es un objeto que contiene la configuración de la aplicación, y next es una función que se llamará para pasar el control al siguiente middleware o acción.
 // O: Se utilizan DESTRUCTURING para extraer las propiedades adminEmail y adminPassword del objeto que se obtiene de app.get('config'). 
@@ -21,9 +21,10 @@ const initAdminUser = async (app, next) => {
     return next();
   }
 
+  try {
     const adminUsers = await usersCruded.adminUserFind();
     console.log('Usuarios administradores:', adminUsers);
-
+    
     if (!adminUsers) {
       const adminUser = {
         email: adminEmail,
@@ -33,6 +34,10 @@ const initAdminUser = async (app, next) => {
       };
       await usersCruded.createUser(adminUser);
     }
+  }
+  catch(error){
+    console.log(error);
+  }
   
   // TODO: Create admin user
   // First, check if adminUser already exists in the database
