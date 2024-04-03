@@ -22,8 +22,6 @@ const initAdminUser = async (app, next) => {
   }
 
     const adminUsers = await usersCruded.adminUserFind();
-    console.log('Usuarios administradores:', adminUsers);
-
     if (!adminUsers) {
       const adminUser = {
         email: adminEmail,
