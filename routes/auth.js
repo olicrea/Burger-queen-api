@@ -22,3 +22,17 @@ module.exports = (app, nextMain) => {
 
   return nextMain();
 };
+
+// O:
+// instalar jsonwebtoken
+// En esta ruta, verifica que el correo y la contraseña proporcionados coincidan con los datos almacenados en la base de datos.
+// Si las credenciales son válidas, genera un token JWT y envíalo en la respuesta al cliente.
+
+// Generación y verificación de tokens JWT:
+// Utiliza la biblioteca jsonwebtoken para crear y verificar tokens JWT.
+// Define una clave secreta para firmar los tokens. Esta clave debe mantenerse segura y no compartirse públicamente.
+
+// Creación del token JWT:
+// Cuando las credenciales son válidas, crea un token JWT con la información relevante (por ejemplo, el ID del usuario).
+// Firma el token utilizando la clave secreta.
+// Devuelve el token al cliente en la respuesta.

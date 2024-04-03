@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const productSchema = new mongoose.Schema({
+    // O: quantity
     // qty: {
     //     type: Number
     // },
