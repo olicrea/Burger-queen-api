@@ -1,4 +1,29 @@
 
+## <1.1.0> - <2024-04-03>
+
+### Sprint learnings
+
+- Conexión de mongodb con mongoose en el entorno nodejs
+- Schemas basados en la documentación
+- Model y CRUD 
+
+### Added
+
+- Se instala mongodb y mongoose
+- Creación correcta de usuario admin to do 2,
+
+### Changed
+
+- CRUD con mongoose y no con mongodb
+
+### Fixed
+
+- N/A
+
+### Removed
+
+- N/A
+
 ## <1.0.0> - <2024-03-27>
 
 ### Sprint learnings
