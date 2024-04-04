@@ -17,6 +17,7 @@ module.exports = (secret) => (req, resp, next) => {
     if (err) {
       return next(403);
     }
+    next(); // cambiar luego
 
     // TODO: Verify user identity using `decodeToken.uid`
   });
