@@ -8,30 +8,34 @@ module.exports = (secret) => (req, resp, next) => {
   }
 
   const [type, token] = authorization.split(' ');
+  console.log("identif token", token);
 
   if (type.toLowerCase() !== 'bearer') {
     return next();
   }
 
   jwt.verify(token, secret, (err, decodedToken) => {
+    console.log("identif decodedToken", decodedToken);
     if (err) {
       return next(403);
     }
-    next(); // cambiar luego
-
     // TODO: Verify user identity using `decodeToken.uid`
+    // UID es un identificador único asignado a cada usuario en el sistema, puedes definirlo como quieras en tu sistema de autenticación
+    req.user = decodedToken;
+    req.userId = decodedToken._id;
+    next();
   });
 };
 
-module.exports.isAuthenticated = (req) => (
+module.exports.isAuthenticated = (req) => { 
   // TODO: Decide based on the request information whether the user is authenticated
-  false
-);
+  return req.userId ? true : false;
+};
 
-module.exports.isAdmin = (req) => (
-  // TODO: Decide based on the request information whether the user is an admin
-  false
-);
+module.exports.isAdmin = (req) => {
+  const admin = req.user.role;
+  return req.user && req.user.role === 'admin';
+};
 
 module.exports.requireAuth = (req, resp, next) => (
   (!module.exports.isAuthenticated(req))

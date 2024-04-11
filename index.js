@@ -1,7 +1,8 @@
+// O: Se importan varios módulos necesarios para construir una aplicación web con Express
 const express = require('express');
 const config = require('./config');
-const authMiddleware = require('./middleware/auth');
-const errorHandler = require('./middleware/error');
+const authMiddleware = require('./middleware/auth'); // O: middleware personalizado para la autenticación.
+const errorHandler = require('./middleware/error'); // O: middleware personalizado para manejar errores
 const routes = require('./routes');
 const pkg = require('./package.json');
 const { connect } = require('./connect');

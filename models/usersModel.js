@@ -5,6 +5,7 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true
+        //lowercase: true
     },
     password: {
         type: String,
@@ -32,18 +33,12 @@ const usersCrud = ()=>{
     };
 
     const adminUserFind= async ()=>{
-        try {
-            const result = await model.find({ role: 'admin'});
-            return result;
-        }
-        catch(error){
-            console.error(error);
-        }
+        const result = await model.find({ role: 'admin'});
+        return result;
     }; 
 
     const createUser = async (user)=>{
         const result = await model.create(user);
-        console.log(result);
         return result;
     };
 
