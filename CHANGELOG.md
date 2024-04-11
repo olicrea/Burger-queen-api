@@ -1,3 +1,30 @@
+## <1.1.1> - <2024-04-10>
+
+### Sprint learnings
+
+- Sobre autenticaciones de usuarios, más sobre operaciones CRUD involucradas para armar el CRUD en el controller
+- Específicamente sobre autenticaciones con JWT y qué es uid
+- Más sobre el flujo desde mi terminal hacia mongodb y postman
+- Estoy entendiendo más sobre middleware
+- Estoy entendiendo más sobre el manejo de errores y la asíncronía
+
+### Added
+
+- Creación de todo el CRUD e implementación según cada ruta
+- Se agregaron más validaciones para logear
+- Se hace verificación de decodedToken
+
+### Changed
+
+- Se modificó operación CRUD asociada a la autenticación
+
+### Fixed
+
+- Tests: globalSetup y users.spec
+
+### Removed
+
+- orders & producta .spec
 
 ## <1.1.0> - <2024-04-03>
 
