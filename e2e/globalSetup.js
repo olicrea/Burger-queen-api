@@ -9,7 +9,6 @@ const config = require('../config');
 
 const port = process.env.PORT || 8888;
 const baseUrl = process.env.REMOTE_URL || `http://127.0.0.1:${port}`;
-
 const __e2e = {
   port,
   baseUrl,
@@ -53,9 +52,7 @@ const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
   },
 });
 
-const fetchAsAdmin = (url, opts) => {
-  return fetchWithAuth(__e2e.adminToken)(url, opts)
-};
+const fetchAsAdmin = (url, opts) => fetchWithAuth(__e2e.adminToken)(url, opts);
 const fetchAsTestUser = (url, opts) => fetchWithAuth(__e2e.testUserToken)(url, opts);
 
 const createTestUser = () => fetchAsAdmin('/users', {
@@ -89,7 +86,7 @@ const checkAdminCredentials = () => fetch('/login', {
   })
   .then(({ accessToken }) => Object.assign(__e2e, { adminToken: accessToken }));
 
-const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) => {
+const waitForServerToBeReady = (retries = 20) => new Promise((resolve, reject) => { //O:modificación retries
   if (!retries) {
     return reject(new Error('Server took too long to start'));
   }
