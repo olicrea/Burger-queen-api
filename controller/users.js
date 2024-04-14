@@ -1,12 +1,35 @@
 const bcrypt = require("bcrypt");
 const { usersCrud } = require('../models/usersModel.js');
 const usersCruded = usersCrud();
+//const { default: mongoose } = require("mongoose");
+
 
 module.exports = {
-  getUsers: async (req, resp, next) => { //next
+  // getUsers: async (req, resp, next) => { //next
+  //   // TODO: Implement the necessary function to fetch the `users` collection or table
+  //   const users = await usersCruded.listUsers();
+  //   return resp.status(200).json(users);
+  // },
+
+  getUsers: async (req, resp, next) => {
     // TODO: Implement the necessary function to fetch the `users` collection or table
-    const users = await usersCruded.listUsers();
-    return resp.status(200).json(users);
+    try {
+      const usersTotal = await usersCruded.listUsers();
+      let { page, limit } = req.query;
+      limit = limit ? parseInt(limit) : 10;
+      page = page ? parseInt(page) : 1; 
+  
+      const skip = (page - 1) * limit;
+      const usersLimit = await usersTotal.skip(skip).limit(limit);
+      const users = await usersLimit.toArray();
+
+      if (users.length === 0) {
+        return resp.status(404).send("No users found");
+      }
+        return resp.status(200).json(users);
+    } catch(error) {
+      return resp.status(500).send("Error getting users" + error.message);
+    }
   },
 
   // https://mauriciogc.medium.com/express-parte-iv-objeto-de-solicitud-request-object-req-24070845ef82#:~:text=solicitud%20HTTP%20POST%20)-,req.,la%20posici%C3%B3n%20de%20la%20URL
@@ -41,14 +64,14 @@ module.exports = {
     }
 
     // Validación de la contraseña utilizando expresiones regulares.
-    const passwordRegex = /^.{1,5}$/;
+    const passwordRegex = /^.{1,6}$/;
     if (!passwordRegex.test(password)) {
-      return res.status(400).json({ error: 'Invalid password' });
+      return resp.status(400).json({ error: 'Invalid password' });
     }
 
     // Verificación de si ya existe un usuario con el mismo correo electrónico.
     try {
-      const existingUser = await usersCruded.getUserByEmail(email);
+      const existingUser = await usersCruded.getInformationUserEmail(email);
       if (existingUser) {
         return resp.status(403).json({ error: 'User with the same email already exists' });
       }
@@ -57,11 +80,18 @@ module.exports = {
       return resp.status(500).json({ error: 'Internal server error' });
     }
 
+     // Validar el rol del usuario
+     if (role !== 'admin' && role !== 'waiter' && role !== 'chef') {
+      return resp.status(400).json({ error: 'Invalid user role' });
+  }
+
     // Creación de un nuevo usuario en la base de datos.
     // Devolución de una respuesta con el ID, correo electrónico y rol del usuario creado.
     try {
       const user = await usersCruded.createUser({ email, password: bcrypt.hashSync(password, 10), role });
-      return resp.status(201).json(user);
+      // const tokenUser = jwt.sign({ _id: user._id, role: user.role, email: user.email }, secretKey, { expiresIn: '1h' });
+      // console.log(tokenUser);
+      return resp.status(200).json({user});
     } catch (err) {
       return resp.status(400).json({ error: err.message });
     }
