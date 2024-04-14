@@ -203,7 +203,7 @@ describe('PUT /users/:uid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => expect(json).toHaveProperty('accessToken'))
+      .then((json) => expect(json).toHaveProperty('token'))
   ));
 
   it('should update user when admin', () => (
@@ -220,7 +220,7 @@ describe('PUT /users/:uid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => expect(json).toHaveProperty('accessToken'))
+      .then((json) => expect(json).toHaveProperty('token'))
   ));
 });
 
@@ -249,7 +249,7 @@ describe('DELETE /users/:uid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then(({ accessToken }) => fetchWithAuth(accessToken)(`/users/${credentials.email}`, {
+      .then(({ token }) => fetchWithAuth(token)(`/users/${credentials.email}`, {
         method: 'DELETE',
       }))
       .then((resp) => expect(resp.status).toBe(200))

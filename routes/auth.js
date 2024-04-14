@@ -39,10 +39,10 @@ module.exports = (app, nextMain) => {
         return resp.status(404).json({ error: "Invalid credentials, invalid password" });
       }
         // If they match, send an access token created with JWT - jwt.sign()
-        const accessToken = jwt.sign({_id: user._id, role: user.role, email: user.email}, secret, {expiresIn: '1h'});
-        console.log(accessToken);
+        const token = jwt.sign({_id: user._id, role: user.role, email: user.email}, secret, {expiresIn: '1h'});
+        console.log(token);
         // Enviar el token de acceso como respuesta json. Successful operation
-        return resp.status(200).json({ accessToken: accessToken, user });
+        return resp.status(200).json({ token: token, user });
     }
 
     catch(error){
