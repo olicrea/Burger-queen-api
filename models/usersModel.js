@@ -24,11 +24,14 @@ const usersCrud = ()=>{
     const model = mongoose.model('users', usersSchema); // O: 'users' es la colección en la db
 
     // O: métodos de instancia - https://mongoosejs.com/docs/guide.html#methods
-    const listUsers = async ()=>{
-        const result = await model.find({});
-        return result;
-        // O: Query.prototype.limit()
-        // O: query.limit(10);
+    const listUsers = async (page, limit) => {
+        const skip = (page - 1) * limit;
+        // Ejecutar la consulta para obtener usuarios, aplicando la paginación y la selección de campos
+        const users = await model.find({})
+        .select('_id email role')
+        .skip(skip)
+        .limit(1);
+        return users;
         // O: Un objeto de tipo Query en Mongoose representa una consulta que se puede ejecutar en la base de datos. No es el resultado de la consulta en sí, sino una representación de la consulta que se puede modificar o ejecutar más adelante.
     };
 

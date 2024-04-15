@@ -9,7 +9,7 @@ const authSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  accessToken: {
+  token: {
     type: String
   },
   user: {
