@@ -1,99 +1,104 @@
 const bcrypt = require("bcrypt");
 const { usersCrud } = require('../models/usersModel.js');
 const usersCruded = usersCrud();
-//const { default: mongoose } = require("mongoose");
-
 
 module.exports = {
-  // getUsers: async (req, resp, next) => { //next
-  //   // TODO: Implement the necessary function to fetch the `users` collection or table
-  //   const users = await usersCruded.listUsers();
-  //   return resp.status(200).json(users);
-  // },
 
   getUsers: async (req, resp, next) => {
-    // TODO: Implement the necessary function to fetch the `users` collection or table
     try {
-      const usersTotal = await usersCruded.listUsers();
+      if (req.user.role !== 'admin') {
+        return resp.status(403).send('User is not an admin');
+      }
+  
       let { page, limit } = req.query;
       limit = limit ? parseInt(limit) : 10;
-      page = page ? parseInt(page) : 1; 
+      page = page ? parseInt(page) : 1;
   
-      const skip = (page - 1) * limit;
-      const usersLimit = await usersTotal.skip(skip).limit(limit);
-      const users = await usersLimit.toArray();
-
+      // Llamar a la función listUsers con los parámetros de paginación
+      const users = await usersCruded.listUsers(page, limit);
+  
       if (users.length === 0) {
         return resp.status(404).send("No users found");
       }
-        return resp.status(200).json(users);
-    } catch(error) {
-      return resp.status(500).send("Error getting users" + error.message);
+  
+      return resp.status(200).json(users);
+    } catch (error) {
+      return resp.status(500).send("Error getting users");
     }
   },
 
   // https://mauriciogc.medium.com/express-parte-iv-objeto-de-solicitud-request-object-req-24070845ef82#:~:text=solicitud%20HTTP%20POST%20)-,req.,la%20posici%C3%B3n%20de%20la%20URL
   getUsersBy: async (req, resp, next) => {
     const { uid } = req.params;
-    const { email } = req.body;
     let user;
 
+    const isAdminOrSameUser =
+      req.user.role === 'admin' ||
+      req.user.email === uid ||
+      req.userId === uid;
+
+    if (!isAdminOrSameUser) {
+      return resp.status(403).send('Unauthorized to access this user');
+    }
+
     if (uid.includes('@')) {
-      user = await usersCruded.getInformationUserEmail(email);
+      emailValid = /^[\w.-]+@[a-zA-Z.-]+$/.test(uid);
+      if (!emailValid){
+        return resp.status(400).send('Invalid email address (getUsersBy)');
+      }
+      user = await usersCruded.getInformationUserEmail(emailValid);
     } else {
       user = await usersCruded.getInformationUserId(uid);
     }
     if (!user) {
-      return resp.sendStatus(404);
+      return resp.status(404).send('No users found (getUsersBy)');
     }
     return resp.json(user);
   },
 
-// Validar direcciones de correo electrónico en formato estándar sin depender de la extensión ".com"
-// Validación de la contraseña utilizando expresiones regulares.
-// Verificación de si ya existe un usuario con el mismo correo electrónico.
-// Creación de un nuevo usuario en la base de datos.
-// Devolución de una respuesta con el ID, correo electrónico y rol del usuario creado.
   postUsers: async (req, resp, next) => {
     const { email, password, role } = req.body;
 
     // Validar direcciones de correo electrónico en formato estándar sin depender de la extensión ".com"
     const emailRegex = /^[\w.-]+@[a-zA-Z.-]+$/;
     if (!emailRegex.test(email)) {
-      return resp.status(400).json({ error: 'Invalid email address' });
+      return resp.status(400).send('Invalid email address');
     }
 
     // Validación de la contraseña utilizando expresiones regulares.
     const passwordRegex = /^.{1,6}$/;
     if (!passwordRegex.test(password)) {
-      return resp.status(400).json({ error: 'Invalid password' });
+      return resp.status(400).send('Invalid password');
     }
 
     // Verificación de si ya existe un usuario con el mismo correo electrónico.
     try {
       const existingUser = await usersCruded.getInformationUserEmail(email);
       if (existingUser) {
-        return resp.status(403).json({ error: 'User with the same email already exists' });
+        return resp.status(403).send('User with the same email already exists');
       }
     } catch (error) {
       console.error('Error checking existing user:', error);
-      return resp.status(500).json({ error: 'Internal server error' });
+      return resp.status(500).send('Internal server error');
     }
 
      // Validar el rol del usuario
      if (role !== 'admin' && role !== 'waiter' && role !== 'chef') {
-      return resp.status(400).json({ error: 'Invalid user role' });
-  }
+      return resp.status(400).send('Invalid user role');
+    }
 
     // Creación de un nuevo usuario en la base de datos.
     // Devolución de una respuesta con el ID, correo electrónico y rol del usuario creado.
     try {
       const user = await usersCruded.createUser({ email, password: bcrypt.hashSync(password, 10), role });
-      // const tokenUser = jwt.sign({ _id: user._id, role: user.role, email: user.email }, secretKey, { expiresIn: '1h' });
-      // console.log(tokenUser);
-      return resp.status(200).json({user});
+      const responseData = {
+        _id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+      return resp.status(200).json(responseData);
     } catch (err) {
-      return resp.status(400).json({ error: err.message });
+      return resp.status(400).send(err.message);
     }
   },
 
