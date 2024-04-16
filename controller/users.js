@@ -35,25 +35,30 @@ module.exports = {
     const isAdminOrSameUser =
       req.user.role === 'admin' ||
       req.user.email === uid ||
-      req.userId === uid;
+      req.user._id === uid;
 
     if (!isAdminOrSameUser) {
       return resp.status(403).send('Unauthorized to access this user');
     }
 
-    if (uid.includes('@')) {
-      emailValid = /^[\w.-]+@[a-zA-Z.-]+$/.test(uid);
-      if (!emailValid){
-        return resp.status(400).send('Invalid email address (getUsersBy)');
+    try {
+
+      if (uid.includes('@')) {
+        emailValid = /^[\w.-]+@[a-zA-Z.-]+$/.test(uid);
+        if (!emailValid){
+          return resp.status(400).send('Invalid email address (getUsersBy)');
+        }
+        user = await usersCruded.getInformationUserEmail(uid);
+      } else {
+        user = await usersCruded.getInformationUserId(uid);
       }
-      user = await usersCruded.getInformationUserEmail(emailValid);
-    } else {
-      user = await usersCruded.getInformationUserId(uid);
+      if (!user) {
+        return resp.status(404).send('No users found (getUsersBy)');
+      }
+      return resp.json(user);
+    } catch (error){
+      return resp.status(500).send("Error getting user");
     }
-    if (!user) {
-      return resp.status(404).send('No users found (getUsersBy)');
-    }
-    return resp.json(user);
   },
 
   postUsers: async (req, resp, next) => {
@@ -105,43 +110,76 @@ module.exports = {
   putUsers: async (req, resp, next) => {
     const { uid } = req.params;
     const { email, password, role } = req.body;
-
-    if (!email && !password && !role) {
-      return resp.sendStatus(400);
+  
+    // Verificar autenticación
+    if (!req.user) {
+      return resp.status(401).send('Unauthorized');
     }
-
+  
+    // Verificar si es usuario dueño de cuenta o admin 
+    const isAdminOrOwner = 
+      req.user.role === 'admin' || 
+      (req.user.email === uid && req.user._id === uid);
+    if (!isAdminOrOwner) {
+      return resp.status(403).send('Unauthorized to update this user');
+    }
+  
+    // Verificar si se proporcionan propiedades para actualizar
+    if (!email && !password && !role) {
+      return resp.status(400).send('No properties provided for update');
+    }
+  
     const update = {};
-      if (email) update.email = email;
-      if (password) update.password = await bcrypt.hashSync(password, 10);
-      if (role) update.role = role;
-
-      try {
-        let updatedUser;
-        if (uid.includes('@')) {
-          updatedUser = await usersCruded.modifyUserEmail(email, update);
-        } else {
-          updatedUser = await usersCruded.modifyUserId(uid, update);
-        }
-        return resp.status(200).json(updatedUser);
-      } catch (error) {
-        return resp.status(400).json({ error: error.message });
+    if (email) update.email = email;
+    if (password) update.password = await bcrypt.hashSync(password, 10);
+    if (role) update.role = role;
+  
+    try {
+      let updatedUser;
+      if (uid.includes('@')) {
+        updatedUser = await usersCruded.modifyUserEmail(uid, update);
+      } else {
+        updatedUser = await usersCruded.modifyUserId(uid, update);
       }
+      return resp.status(200).json(updatedUser);
+    } catch (error) {
+      return resp.status(400).send('Request error');
+    }
   },
+  
 
   deleteUsers: async (req, resp, next) => {
     const { uid } = req.params;
     const { email } = req.body;
-    let deletedResult;
-
-    if (uid.includes('@')) {
-      deletedResult = await usersCruded.deleteUserEmail(email);
-    } else {
-      deletedResult = await usersCruded.deleteUserId(uid);
+  
+    // Verificar si el usuario tiene permiso para eliminar el usuario
+    if (!req.user) {
+      return resp.status(403).send('Unauthorized to delete this user');
     }
-    if (!deletedResult) {
-      return resp.sendStatus(404);
+  
+    try {
+      let deletedResult;
+  
+      // Si el usuario es un administrador o está eliminando su propio usuario, permitir la eliminación
+      if (req.user.role === 'admin' || req.user.email === email || req.user._id === uid) {
+        if (uid.includes('@')) {
+          deletedResult = await usersCruded.deleteUserEmail(email);
+        } else {
+          deletedResult = await usersCruded.deleteUserId(uid);
+        }
+  
+        // Verificar si el usuario fue eliminado correctamente
+        if (!deletedResult) {
+          return resp.sendStatus(404);
+        }
+  
+        return resp.json(deletedResult);
+      } else {
+        // Si no es un administrador y no está eliminando su propio usuario, devolver un estado 403
+        return resp.status(403).send('Unauthorized to delete this user');
+      }
+    } catch (error) {
+      return resp.status(500).send('Error deleting user');
     }
-    return resp.json(deletedResult);
   }
-
 };
