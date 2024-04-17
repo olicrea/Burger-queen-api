@@ -144,7 +144,6 @@ module.exports = {
     }
   },
   
-
   deleteUsers: async (req, resp, next) => {
     const { uid } = req.params;
     const { email } = req.body;
@@ -193,21 +192,4 @@ module.exports = {
     }
   }
 
-
 };
-
-// const isAuthorizedToDelete = (req, uid, email) => {
-//   // Si el usuario no está autenticado, no tiene permiso
-//   if (!req.user) {
-//       return false;
-//   }
-//   // Si el usuario es un administrador, tiene permiso
-//   if (req.user.role === 'admin') {
-//       return true;
-//   }
-//   // Si el usuario está eliminando su propio usuario, tiene permiso
-//   if (req.user.email === email || req.user._id === uid) {
-//       return true;
-//   }
-//   return false;
-// }

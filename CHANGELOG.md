@@ -1,3 +1,29 @@
+## <1.2.0> - <2024-04-17>
+
+### Sprint learnings
+
+- Pude hacer y entender más las operaciones Crud, junto a sus validaciones , parámetros y argumentos. 
+- Entendí más la ruta de la información dentro de la API.
+- Entendí más sobre cómo leer y manejar las pruebas e2e.
+
+### Added
+
+- Todas las operaciones Crud funcionan según lo esperado y superan las pruebas
+- Más verificaciones
+- Más manejo de errores
+
+### Changed
+
+- Se modificaron todas las operaciones CRUD para que tu vieran el comportamiento esperado por la clienta
+
+### Fixed
+
+- Tests: globalSetup y users.spec
+
+### Removed
+
+- Folder crud
+
 ## <1.1.1> - <2024-04-10>
 
 ### Sprint learnings
