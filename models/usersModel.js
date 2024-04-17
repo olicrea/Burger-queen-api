@@ -64,15 +64,16 @@ const usersCrud = ()=>{
         const result = await model.findOneAndUpdate({ email: email }, update); 
         // O: https://mongoosejs.com/docs/tutorials/findoneandupdate.html
         return result;    
+        
     };
 
     const deleteUserId = async (id)=>{
-        const result = await model.findByIdAndDelete({ _id: id });
+        const result = await model.findByIdAndDelete({ id });
         return result;    
     };
 
     const deleteUserEmail = async (email)=>{
-        const result = await model.findOneAndDelete({ email: email });
+        const result = await model.findOneAndDelete({ email });
         return result;    
     };
 
