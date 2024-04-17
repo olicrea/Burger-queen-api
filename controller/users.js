@@ -83,7 +83,6 @@ module.exports = {
         return resp.status(403).send('User with the same email already exists');
       }
     } catch (error) {
-      console.error('Error checking existing user:', error);
       return resp.status(500).send('Internal server error');
     }
 
