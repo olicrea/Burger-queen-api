@@ -110,17 +110,14 @@ module.exports = {
   putUsers: async (req, resp, next) => {
     const { uid } = req.params;
     const { email, password, role } = req.body;
-  
-    // Verificar autenticación
-    if (!req.user) {
-      return resp.status(401).send('Unauthorized');
-    }
-  
+    
+      
     // Verificar si es usuario dueño de cuenta o admin 
-    const isAdminOrOwner = 
-      req.user.role === 'admin' || 
-      (req.user.email === uid && req.user._id === uid);
-    if (!isAdminOrOwner) {
+    if (
+      req.user.role !== 'admin' &&
+      req.user.email !== uid &&
+      req.user._id !== uid
+    ) {
       return resp.status(403).send('Unauthorized to update this user');
     }
   
@@ -151,35 +148,66 @@ module.exports = {
   deleteUsers: async (req, resp, next) => {
     const { uid } = req.params;
     const { email } = req.body;
-  
-    // Verificar si el usuario tiene permiso para eliminar el usuario
-    if (!req.user) {
-      return resp.status(403).send('Unauthorized to delete this user');
-    }
-  
+
     try {
-      let deletedResult;
-  
-      // Si el usuario es un administrador o está eliminando su propio usuario, permitir la eliminación
-      if (req.user.role === 'admin' || req.user.email === email || req.user._id === uid) {
+          
+      // Verificar si el usuario es un administrador
+      if (req.user.role === 'admin') {
+        // Permitir al administrador borrar otros usuarios
+        let deletedResult;
         if (uid.includes('@')) {
-          deletedResult = await usersCruded.deleteUserEmail(email);
+          deletedResult = await usersCruded.deleteUserEmail(uid);
         } else {
           deletedResult = await usersCruded.deleteUserId(uid);
         }
-  
-        // Verificar si el usuario fue eliminado correctamente
+
         if (!deletedResult) {
-          return resp.sendStatus(404);
+          return resp.status(404).send('Error deleting user');
         }
-  
-        return resp.json(deletedResult);
+
+        return resp.status(200).send('User deleted successfully');
       } else {
-        // Si no es un administrador y no está eliminando su propio usuario, devolver un estado 403
-        return resp.status(403).send('Unauthorized to delete this user');
+        // Restringir la eliminación del propio usuario
+        if ((req.user.email === uid || 
+          req.user._id === uid) && 
+          (req.user.role !== 'admin')) {
+          // Permitir que un usuario no administrador se borre a sí mismo
+          let deletedResult;
+          if (uid.includes('@')) {
+            deletedResult = await usersCruded.deleteUserEmail(uid);
+          } else {
+            deletedResult = await usersCruded.deleteUserId(uid);
+          }
+
+          if (!deletedResult) {
+            return resp.status(404).send('Error deleting user');
+          }
+
+          return resp.status(200).send('User deleted successfully');
+        } else {
+          return resp.status(403).send('Unauthorized to delete this user');
+        }
       }
     } catch (error) {
-      return resp.status(500).send('Error deleting user');
+      // Manejar el error
     }
   }
+
+
 };
+
+// const isAuthorizedToDelete = (req, uid, email) => {
+//   // Si el usuario no está autenticado, no tiene permiso
+//   if (!req.user) {
+//       return false;
+//   }
+//   // Si el usuario es un administrador, tiene permiso
+//   if (req.user.role === 'admin') {
+//       return true;
+//   }
+//   // Si el usuario está eliminando su propio usuario, tiene permiso
+//   if (req.user.email === email || req.user._id === uid) {
+//       return true;
+//   }
+//   return false;
+// }
