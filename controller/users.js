@@ -110,7 +110,12 @@ module.exports = {
   putUsers: async (req, resp, next) => {
     const { uid } = req.params;
     const { email, password, role } = req.body;
-    
+
+    // Verificar si el usuario que se quiere modificar existe
+    const existingUser = await usersCruded.getInformationUserEmail(uid);
+        if (!existingUser) {
+            return resp.status(404).send('User not found');
+        }    
       
     // Verificar si es usuario dueño de cuenta o admin 
     if (
@@ -120,7 +125,7 @@ module.exports = {
     ) {
       return resp.status(403).send('Unauthorized to update this user');
     }
-  
+
     // Verificar si se proporcionan propiedades para actualizar
     if (!email && !password && !role) {
       return resp.status(400).send('No properties provided for update');
@@ -130,8 +135,18 @@ module.exports = {
     if (email) update.email = email;
     if (password) update.password = await bcrypt.hashSync(password, 10);
     if (role) update.role = role;
+
+    // Verificar que solo admin pueda cambiar role
+    if (role) {
+      if (req.user.role === 'admin') {
+        update.role = role;
+      } else {
+        return resp.status(403).send('Only an admin can change the user role');
+      }
+    }
   
     try {
+      
       let updatedUser;
       if (uid.includes('@')) {
         updatedUser = await usersCruded.modifyUserEmail(uid, update);
