@@ -8,7 +8,7 @@ const pkg = require('./package.json');
 const { connect } = require('./connect');
 
 const { port, secret } = config;
-const app = express();
+const app = express(); // instancia de aplicación express
 
 app.set('config', config);
 app.set('pkg', pkg);
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(authMiddleware(secret));
 
-connect();
+connect(); // conexión a db
 
 // Registrar rutas
 routes(app, (err) => {
