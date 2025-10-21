@@ -4,8 +4,6 @@
 
 * [1. Preámbulo](#1-pre%C3%A1mbulo)
 * [2. Criterios de aceptación mínimos del proyecto](#2-criterios-de-aceptaci%C3%B3n-m%C3%ADnimos-del-proyecto)
-* [3. Hacker (Devops) Edition con Docker](#3-hacker-%28devops%29-edition-con-docker)
-* [4. Pistas, tips y lecturas complementarias](#4-pistas-tips-y-lecturas-complementarias)
 
 ## 1. Preámbulo
 
