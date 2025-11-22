@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken');
 
+// Verifica si existe un encabezado de autorización en la solicitud
 module.exports = (secret) => (req, resp, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return next();
+    return next(); // pasa al siguiente middleware
   }
 
   const [type, token] = authorization.split(' ');
@@ -14,6 +15,7 @@ module.exports = (secret) => (req, resp, next) => {
     return next();
   }
 
+  // Verifica la validez del token
   jwt.verify(token, secret, (err, decodedToken) => {
     console.log("identif decodedToken", decodedToken);
     if (err) {
@@ -33,7 +35,7 @@ module.exports.isAuthenticated = (req) => {
 };
 
 module.exports.isAdmin = (req) => {
-  const admin = req.user.role;
+
   return req.user && req.user.role === 'admin';
 };
 
